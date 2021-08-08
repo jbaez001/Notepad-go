@@ -18,6 +18,8 @@ package app
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/AllenDang/giu"
@@ -86,7 +88,7 @@ type Application struct {
 
 	// text editor
 	textEditor        imgui.TextEditor
-	currentFileName   string
+	currentFilename   string
 	currentFileBuffer []byte
 
 	// options
@@ -259,6 +261,20 @@ func (ptr *Application) render() {
 // setCurrentMsgBox sets the current message box
 func (ptr *Application) setCurrentMsgBox(msgboxId uint8) {
 	ptr.currentMsgBox = msgboxId
+}
+
+func (ptr *Application) saveFile(filename string) {
+	// update the file buffer
+	ptr.currentFileBuffer = []byte(ptr.textEditor.GetText())
+
+	if err := ioutil.WriteFile(filename,
+		ptr.currentFileBuffer, 066); err != nil {
+		log.Println("error saving file", err)
+		return
+	}
+
+	ptr.currentFilename = filename
+	log.Println(ptr.currentFilename, "saved...")
 }
 
 // showMessageBoxes
