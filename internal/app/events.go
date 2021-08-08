@@ -55,7 +55,17 @@ func (ptr *Application) onClickMenuFileOpen() {
 
 // onClickMenuFileExit is called when user clicks uiMenuFileExit
 func (ptr *Application) onClickMenuFileExit() {
-	os.Exit(0)
+
+	// confirm whether the user intended to exit Notepad or not
+	confirmationDialog := dialog.MsgBuilder{
+		Dlg: dialog.Dlg{Title: "Exit Notepad"},
+		Msg: "Exit Notepad?",
+	}
+
+	// TODO: should really only do this if we have unsaved changes
+	if confirmationDialog.YesNo() {
+		os.Exit(0)
+	}
 }
 
 // onClickMenuFileSave is called when user clicks uiMenuFileSave
