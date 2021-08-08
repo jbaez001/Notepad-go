@@ -16,20 +16,63 @@ limitations under the License.
 
 package app
 
+import (
+	"io/ioutil"
+	"log"
+	"os"
+
+	"github.com/sqweek/dialog"
+)
+
 // onClickMenuFileNew is called when user clicks uiMenuFileNew
 func (ptr *Application) onClickMenuFileNew() {
+
+	// reset the text editor
+	ptr.textEditor.SetText("")
 }
 
 // onClickMenuFileOpen is called when user clicks uiMenuFileOpen
 func (ptr *Application) onClickMenuFileOpen() {
+	fileName, err := dialog.File().Filter("Open file", "*").Load()
+	if err != nil || fileName == "" {
+		return
+	}
+
+	// open the file
+	fileContents, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return
+	}
+
+	// update current file information
+	ptr.currentFileName = fileName
+	ptr.currentFileBuffer = fileContents
+
+	// display the contents
+	ptr.textEditor.SetText(string(ptr.currentFileBuffer))
 }
 
 // onClickMenuFileExit is called when user clicks uiMenuFileExit
 func (ptr *Application) onClickMenuFileExit() {
+	os.Exit(0)
 }
 
 // onClickMenuFileSave is called when user clicks uiMenuFileSave
 func (ptr *Application) onClickMenuFileSave() {
+	if ptr.currentFileName == "" || ptr.currentFileBuffer == nil {
+		return
+	}
+
+	// update the file buffer
+	ptr.currentFileBuffer = []byte(ptr.textEditor.GetText())
+
+	if err := ioutil.WriteFile(ptr.currentFileName,
+		ptr.currentFileBuffer, 066); err != nil {
+		log.Println("error saving file", err)
+		return
+	}
+
+	log.Println(ptr.currentFileName, "saved...")
 }
 
 // onClickMenuFileSaveAs is called when user clicks uiMenuFileSaveAs

@@ -81,9 +81,15 @@ const (
 
 // Application is our app type
 type Application struct {
-	masterWindow         *giu.MasterWindow
-	textEditor           imgui.TextEditor
-	currentMsgBox        uint8
+	masterWindow  *giu.MasterWindow
+	currentMsgBox uint8
+
+	// text editor
+	textEditor        imgui.TextEditor
+	currentFileName   string
+	currentFileBuffer []byte
+
+	// options
 	optionWordWrap       bool //wordwrap
 	optionShowWhiteSpace bool // white space
 	optionShowBorder     bool // text editor border
