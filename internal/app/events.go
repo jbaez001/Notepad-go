@@ -32,7 +32,10 @@ func (ptr *Application) onClickMenuFileNew() {
 
 // onClickMenuFileOpen is called when user clicks uiMenuFileOpen
 func (ptr *Application) onClickMenuFileOpen() {
-	fileName, err := dialog.File().Filter("Open file", "*").Load()
+	fileName, err := dialog.File().Filter(
+		"Open file",
+		"*",
+	).Load()
 	if err != nil || fileName == "" {
 		return
 	}
@@ -69,7 +72,10 @@ func (ptr *Application) onClickMenuFileSave() {
 
 // onClickMenuFileSaveAs is called when user clicks uiMenuFileSaveAs
 func (ptr *Application) onClickMenuFileSaveAs() {
-	filename, err := dialog.File().Filter("Select", "*").Save()
+	filename, err := dialog.File().Filter(
+		"Select",
+		"*",
+	).Save()
 	if err != nil || filename == "" {
 		return
 	}
