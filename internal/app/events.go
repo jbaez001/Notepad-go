@@ -34,7 +34,6 @@ func (ptr *Application) onClickMenuFileNew() {
 func (ptr *Application) onClickMenuFileOpen() {
 	fileName, err := dialog.File().Filter(
 		"Open file",
-		"*",
 	).Load()
 	if err != nil || fileName == "" {
 		return
@@ -72,9 +71,11 @@ func (ptr *Application) onClickMenuFileSave() {
 
 // onClickMenuFileSaveAs is called when user clicks uiMenuFileSaveAs
 func (ptr *Application) onClickMenuFileSaveAs() {
+	// if file exists, the below method will also prompt the
+	// user for confirmation whether or not the intent is to
+	// overwrite the intended file
 	filename, err := dialog.File().Filter(
 		"Select",
-		"*",
 	).Save()
 	if err != nil || filename == "" {
 		return
