@@ -90,6 +90,7 @@ type Application struct {
 	textEditor        imgui.TextEditor
 	currentFilename   string
 	currentFileBuffer []byte
+	hasUnsavedChanges bool
 
 	// options
 	optionWordWrap       bool //wordwrap
@@ -117,9 +118,9 @@ func New() *Application {
 	return _app
 }
 
-// msgBoxResultExitConfirmation gets called whenever the user interacts
+// msgBoxResultAboutNotepad gets called whenever the user interacts
 // with onClickMenuAboutNotepad
-func (ptr *Application) msgBoxResultExitConfirmation(
+func (ptr *Application) msgBoxResultAboutNotepad(
 	result giu.DialogResult,
 ) {
 	if result == giu.DialogResultYes {
@@ -212,6 +213,16 @@ func (ptr *Application) helpMenu() *giu.MenuWidget {
 	return menuLayout
 }
 
+// handle application updates
+func (ptr *Application) update() {
+	// check to see if we have any unsaved changes
+	if ptr.textEditor.IsTextChanged() && !ptr.hasUnsavedChanges {
+		ptr.hasUnsavedChanges = true
+	}
+
+	giu.Update()
+}
+
 // renderTopMenu will return the top menu
 func (ptr *Application) renderTopMenu() *giu.MenuBarWidget {
 	// create the layout
@@ -245,17 +256,21 @@ func (ptr *Application) renderTextEditor() giu.Widget {
 			ptr.optionShowBorder,
 		)
 
-		// show message boxes if there are any
+		// show message boxes; if any
 		ptr.showMessageBoxes()
 	})
 }
 
 // render will render the Application
 func (ptr *Application) render() {
+	// render the main window
 	giu.SingleWindowWithMenuBar().Layout(
 		ptr.renderTopMenu(),
 		ptr.renderTextEditor(),
 	)
+
+	// handle updates
+	ptr.update()
 }
 
 // setCurrentMsgBox sets the current message box
@@ -275,6 +290,10 @@ func (ptr *Application) saveFile(filename string) {
 
 	ptr.currentFilename = filename
 	log.Println(ptr.currentFilename, "saved...")
+
+	if ptr.hasUnsavedChanges {
+		ptr.hasUnsavedChanges = false
+	}
 }
 
 // showMessageBoxes
@@ -293,7 +312,7 @@ func (ptr *Application) showMessageBoxes() {
 				version.DateCompiled,
 			),
 			giu.MsgboxButtonsOk,
-			ptr.msgBoxResultExitConfirmation,
+			ptr.msgBoxResultAboutNotepad,
 		)
 
 	// nothing to do
