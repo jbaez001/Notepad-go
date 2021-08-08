@@ -273,7 +273,6 @@ func (ptr *Application) showMessageBoxes() {
 			giu.MsgboxButtonsOk,
 			ptr.msgBoxResultExitConfirmation,
 		)
-		break
 
 	// nothing to do
 	default:
